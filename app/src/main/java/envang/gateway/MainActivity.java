@@ -6,23 +6,32 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.IOException;
 
 public class MainActivity extends Activity {
-
+    TextView tv_ipAddress;
+    Button btn_startServer;
+    TextView tv_serverLog;
+    String strServerLog = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button startButton = (Button)findViewById(R.id.btn_Start);
-        startButton.setOnClickListener(new View.OnClickListener(){
+        tv_ipAddress = (TextView)findViewById(R.id.tv_ipAddress);
+        btn_startServer = (Button)findViewById(R.id.btn_Start);
+        tv_serverLog = (TextView)findViewById(R.id.tv_serverLog);
+        btn_startServer.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 String ipAddress = Utils.getIPAddress(true);
-                SmsGetWayServer server = new SmsGetWayServer(ipAddress, 8081);
+                tv_ipAddress.setText("http://" + ipAddress+":2000");
+                SmsGetWayServer server = new SmsGetWayServer(ipAddress, 2000);
                 try {
                     server.start();
+                    strServerLog = strServerLog + "SMS server running on at http://" + ipAddress + ":2000\n";
+                    tv_serverLog.setText(strServerLog);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
