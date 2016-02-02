@@ -1,5 +1,8 @@
 package envang.gateway;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
 import android.telephony.SmsManager;
 import android.widget.TextView;
 

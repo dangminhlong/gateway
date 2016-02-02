@@ -1,5 +1,6 @@
 package envang.gateway;
 
+import android.content.ContentResolver;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         tv_ipAddress = (TextView)findViewById(R.id.tv_ipAddress);
         cb_runServer = (CheckBox)findViewById(R.id.cb_runServer);
         tv_serverLog = (TextView)findViewById(R.id.tv_serverLog);
