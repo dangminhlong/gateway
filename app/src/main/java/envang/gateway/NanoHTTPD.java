@@ -2152,7 +2152,7 @@ public abstract class NanoHTTPD {
      *            The HTTP session
      * @return HTTP response, see class Response for details
      */
-    public Response serve(IHTTPSession session) {
+    public Response serve(IHTTPSession session) throws IOException, ResponseException {
         Map<String, String> files = new HashMap<String, String>();
         Method method = session.getMethod();
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
