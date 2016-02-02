@@ -27,12 +27,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         tv_ipAddress = (TextView)findViewById(R.id.tv_ipAddress);
         cb_runServer = (CheckBox)findViewById(R.id.cb_runServer);
         tv_serverLog = (TextView)findViewById(R.id.tv_serverLog);
         ipAddress = Utils.getIPAddress(true);
         tv_ipAddress.setText("http://" + ipAddress + ":2000");
-        server = new SmsGetWayServer(ipAddress, 2000, tv_serverLog);
+        server = new SmsGetWayServer(ipAddress, 2000, tv_serverLog, this);
         cb_runServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         server.start();
                         cb_runServer.setText("Stop");
-                        strServerLog = strServerLog + "SMS server running at http://" + ipAddress + ":2000\n";
-                        tv_serverLog.setText(strServerLog);
+                        strServerLog = "SMS server running at http://" + ipAddress + ":2000\n";
+                        tv_serverLog.append(strServerLog);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    strServerLog = strServerLog + "SMS server stopped\n";
-                    tv_serverLog.setText(strServerLog);
+                    strServerLog = "SMS server stopped\n";
+                    tv_serverLog.append(strServerLog);
                     server.stop();
                     cb_runServer.setText("Run");
                 }
