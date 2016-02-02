@@ -14,16 +14,22 @@
             android:layout_height="wrap_content"
             android:hint="IP address"
             android:id="@+id/tv_ipAddress"/>
-        <Button
+        <CheckBox
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Click to run server"
-            android:id="@+id/btn_Start"/>
+            android:text="Run"
+            android:checked="false"
+            android:id="@+id/cb_runServer" />
     </LinearLayout>
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:hint="Server log"
-        android:id="@+id/tv_serverLog"/>
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Server log"
+            android:id="@+id/tv_serverLog"/>
+    </ScrollView>
+
 </LinearLayout>

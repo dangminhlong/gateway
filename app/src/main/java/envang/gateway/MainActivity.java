@@ -1,42 +1,70 @@
 package envang.gateway;
 
-import android.app.Activity;
+import android.os.PersistableBundle;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     TextView tv_ipAddress;
-    Button btn_startServer;
+    CheckBox cb_runServer;
     TextView tv_serverLog;
+    SmsGetWayServer server;
+    String ipAddress;
     String strServerLog = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         tv_ipAddress = (TextView)findViewById(R.id.tv_ipAddress);
-        btn_startServer = (Button)findViewById(R.id.btn_Start);
+        cb_runServer = (CheckBox)findViewById(R.id.cb_runServer);
         tv_serverLog = (TextView)findViewById(R.id.tv_serverLog);
-        btn_startServer.setOnClickListener(new View.OnClickListener(){
+        ipAddress = Utils.getIPAddress(true);
+        tv_ipAddress.setText("http://" + ipAddress + ":2000");
+        server = new SmsGetWayServer(ipAddress, 2000);
+        cb_runServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ipAddress = Utils.getIPAddress(true);
-                tv_ipAddress.setText("http://" + ipAddress+":2000");
-                SmsGetWayServer server = new SmsGetWayServer(ipAddress, 2000);
-                try {
-                    server.start();
-                    strServerLog = strServerLog + "SMS server running on at http://" + ipAddress + ":2000\n";
+                if (cb_runServer.isChecked()) {
+                    try {
+                        server.start();
+                        cb_runServer.setText("Stop");
+                        strServerLog = strServerLog + "SMS server running at http://" + ipAddress + ":2000\n";
+                        tv_serverLog.setText(strServerLog);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    strServerLog = strServerLog + "SMS server stopped\n";
                     tv_serverLog.setText(strServerLog);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    server.stop();
+                    cb_runServer.setText("Run");
                 }
             }
         });
+
+        if (savedInstanceState !=null) {
+            Boolean isChecked = savedInstanceState.getBoolean("Run");
+            if (isChecked)
+                cb_runServer.setText("Stop");
+            else
+                cb_runServer.setText("Run");
+            cb_runServer.setChecked(isChecked);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putBoolean("Run", cb_runServer.isChecked() );
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
