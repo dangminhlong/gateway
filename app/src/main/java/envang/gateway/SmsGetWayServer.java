@@ -1,6 +1,7 @@
 package envang.gateway;
 
 import android.telephony.SmsManager;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,10 +16,12 @@ import java.util.Map;
 public class SmsGetWayServer extends NanoHTTPD {
 
     SmsManager smgr;
+    TextView tv_serverLog;
 
-    public SmsGetWayServer(String hostname, int port) {
+    public SmsGetWayServer(String hostname, int port, TextView tv_serverLog) {
         super(hostname, port);
         this.smgr = SmsManager.getDefault();
+        this.tv_serverLog = tv_serverLog;
     }
 
     @Override
@@ -28,25 +31,30 @@ public class SmsGetWayServer extends NanoHTTPD {
         Map<String, String> params = session.getParms();
         String sendTo = params.get("To");
         String sendMsg = params.get("Message");
-        JSONObject jsonObject = new JSONObject();
-        try {
-            smgr.sendTextMessage(sendTo, null, sendMsg, null, null);
+        if (sendTo != null && sendMsg != null) {
+            JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("sucess", "true");
+                smgr.sendTextMessage(sendTo, null, sendMsg, null, null);
+                try {
+                    tv_serverLog.append("Success:" + sendTo + "@" + sendMsg);
+                    jsonObject.put("sucess", "true");
+                } catch (Exception ec) {
+                    return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{success:true}");
+                }
+            } catch (Exception ex) {
+                tv_serverLog.append("Failed:" + sendTo + "@" + sendMsg);
+                try {
+                    jsonObject.put("sucess", "false");
+                } catch (Exception e) {
+                    return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{success:false}");
+                }
             }
-            catch (Exception ec){
-                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{success:true}");
-            }
+            String msg = jsonObject.toString();
+            Response response = newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", msg);
+            return response;
         }
-        catch (Exception ex) {
-            try {
-                jsonObject.put("sucess", "false");
-            } catch (Exception e) {
-                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json","{success:false}");
-            }
+        else {
+            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{success:false}");
         }
-        String msg = jsonObject.toString();
-        Response response = newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", msg);
-        return response;
     }
 }

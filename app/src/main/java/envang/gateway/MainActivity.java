@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         tv_serverLog = (TextView)findViewById(R.id.tv_serverLog);
         ipAddress = Utils.getIPAddress(true);
         tv_ipAddress.setText("http://" + ipAddress + ":2000");
-        server = new SmsGetWayServer(ipAddress, 2000);
+        server = new SmsGetWayServer(ipAddress, 2000, tv_serverLog);
         cb_runServer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
