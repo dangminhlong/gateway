@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     SmsGetWayServer server;
     String ipAddress;
     String strServerLog = "";
+    Boolean bRunning;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        bRunning = false;
         tv_ipAddress = (TextView)findViewById(R.id.tv_ipAddress);
         cb_runServer = (CheckBox)findViewById(R.id.cb_runServer);
         tv_serverLog = (TextView)findViewById(R.id.tv_serverLog);
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 if (cb_runServer.isChecked()) {
                     try {
                         server.start();
+                        bRunning = true;
                         cb_runServer.setText("Stop");
                         strServerLog = "SMS server running at http://" + ipAddress + ":2000\n";
                         tv_serverLog.append(strServerLog);
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     strServerLog = "SMS server stopped\n";
                     tv_serverLog.append(strServerLog);
                     server.stop();
+                    bRunning = false;
                     cb_runServer.setText("Run");
                 }
             }
@@ -68,7 +72,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         outState.putBoolean("Run", cb_runServer.isChecked() );
+
         super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.cb_runServer.setChecked(bRunning);
     }
 
     @Override
