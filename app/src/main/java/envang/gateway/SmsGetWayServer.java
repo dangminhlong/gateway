@@ -49,16 +49,15 @@ public class SmsGetWayServer extends NanoHTTPD {
         String sendTo = params.get("To");
         String sendMsg = params.get("Message");
         if (sendTo != null && sendMsg != null) {
-            JSONObject jsonObject = new JSONObject();
             try {
                 this.smsHandler.sendSMS(sendTo, sendMsg);
-                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{'success':'true'}");
+                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"success\":\"true\"}");
             } catch (Exception ex) {
-                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{'success':'false'}");
+                return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"success\":\"false\"}");
             }
         }
         else {
-            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{'success':'false'}");
+            return newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "application/json", "{\"success\":\"false\"}");
         }
     }
 
